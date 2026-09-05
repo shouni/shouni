@@ -77,6 +77,15 @@ Cloud Run / Cloud Tasks 上で動く成果物。認証・セッション・CSRF�
 | **ap-mcp**（非公開） | 5 サービス・72 ツールを 1 エンドポイントへ集約するゲートウェイ。説明文は Go のリテラルではなく `{service}/{tool}.md`、annotations は推測ではなく宣言、**confirm ゲートはプレビューそのもの**（設計は [applications.md](https://github.com/shouni/public-docs/blob/main/docs/applications.md)） |
 | [**ap-mcp-slack**](https://github.com/shouni/ap-mcp-slack) | サーバーを建てずに stdio で動く Slack の MCP。認証情報に応じてツールの登録自体が変わる |
 
+### 🐍 Python のツール
+
+Cloud Run に乗せず、手元で単体で動かすもの。映像と音の解析は既存の資産が Python 側にあります。
+
+| | |
+|---|---|
+| [**lyric-video-maker**](https://github.com/shouni/lyric-video-maker) | MP3 とキーフレーム ZIP から**カラオケ字幕付き MP4** を生成。歌詞がプレーンテキストでもタイミングを付けられる（[記事](https://zenn.dev/snknsk/articles/lyric-video-maker)） |
+| [**ap-audio-probe**](https://github.com/shouni/ap-audio-probe) | 生成した楽曲が**レシピの指示どおりに鳴っているか**を測る検証ツール。Demucs で伴奏を除いてから測り、閾値は曲ごとの相対で決める。曲の良し悪しは対象外 |
+
 ---
 
 ### 📝 設計判断の記録
