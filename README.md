@@ -105,4 +105,4 @@ Cloud Run に乗せず、手元で単体で動かすもの。映像と音の解�
 
 ---
 
-<sub>境界の地図と規約は [public-docs](https://github.com/shouni/public-docs)、使い方は各リポジトリの README、API は [pkg.go.dev](https://pkg.go.dev/github.com/shouni)、内部の設計判断は各リポジトリの CLAUDE.md が持ちます。</sub>
+<sub>境界の地図と規約は [public-docs](https://github.com/shouni/public-docs)、使い方は各リポジトリの README、API は [pkg.go.dev](https://pkg.go.dev/search?q=github.com%2Fshouni)、内部の設計判断は各リポジトリの CLAUDE.md が持ちます。</sub>
