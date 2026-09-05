@@ -65,6 +65,7 @@ Cloud Run / Cloud Tasks 上で動く成果物。認証・セッション・CSRF�
 
 | | 何をするか | 設計の要点 |
 |---|---|---|
+| [**ap-mv**](https://github.com/shouni/ap-mv) | 楽曲構成書から Veo でミュージックビデオを生成 | **カット 1 本ずつ生成し、ワーカーが自分で投げ直す**。Cloud Tasks の時間上限を越え、途中から再開できる |
 | [**ap-story**](https://github.com/shouni/ap-story) | 原稿から章立て・ネーム・パネル・ページを生成 | **台本ゲート**。コマ数が分かる前に画像生成を始めない |
 | [**ap-voice**](https://github.com/shouni/ap-voice) | 記事や文書を話者指定のナレーション音声へ | 台本と音声を別工程に。**生成をやり直さず合成だけかけ直せる** |
 | [**adk-review**](https://github.com/shouni/adk-review) | Git 差分を AI エージェントにレビューさせる | 読み取り専用ツール 3 種で**差分の外を自分で調べる**。打ち切りは時間ではなく回数 |
