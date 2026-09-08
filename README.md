@@ -1,13 +1,13 @@
 ## Go / Google Cloud / 生成 AI
 
-**公開 Go ライブラリ 19 本**と、それらを統合して **Cloud Run + Cloud Tasks** 上で動く
+**公開 Go ライブラリ 17 本**と、それらを統合して **Cloud Run + Cloud Tasks** 上で動く
 生成系アプリケーション群を個人で作っています。
 
 作っているものより、**境界の引き方**を残すことに時間を使っています。どのライブラリが何を
 引き受けないか、なぜその層に置いたか、どの案を採らなかったか——1 つのリポジトリの中だけを
 見ていては書けないことは、すべて [**public-docs**](https://github.com/shouni/public-docs) にまとめてあります。
 
-* 🗺️ [**ライブラリリファレンス**](https://github.com/shouni/public-docs/blob/main/docs/libraries.md) — 19 本の境界の地図（担当範囲・隣との線引き・層の位置）
+* 🗺️ [**ライブラリリファレンス**](https://github.com/shouni/public-docs/blob/main/docs/libraries.md) — 17 本の境界の地図（担当範囲・隣との線引き・層の位置）
 * 🚀 [**アプリケーションリファレンス**](https://github.com/shouni/public-docs/blob/main/docs/applications.md) — 各アプリがどこまで自分で持ち、どこから委譲しているか
 * 📐 [**規約**](https://github.com/shouni/public-docs#documents) — URL 命名・ワーカー・README の、リポジトリ横断の決まり
 * 📝 [**Zenn @snknsk**](https://zenn.dev/snknsk) — 設計判断の記録
@@ -40,9 +40,7 @@ AI の話を一切含まない層。生成系以外のアプリケーション�
 | | 担当範囲 |
 |---|---|
 | [**go-prompt-kit**](https://github.com/shouni/go-prompt-kit) | プロンプト管理と、レスポンスの Markdown / JSON → HTML 化 |
-| [**go-gemini-client**](https://github.com/shouni/go-gemini-client) | Gemini API と Vertex AI のデュアルバックエンド |
-| [**genai-kit**](https://github.com/shouni/genai-kit) | Vertex AI 専用。参照画像は `gs://` をモデル側に解決させる |
-| [**gemini-image-kit**](https://github.com/shouni/gemini-image-kit) | 参照画像の取得・再圧縮・キャッシュまで要る画像生成 |
+| [**genai-kit**](https://github.com/shouni/genai-kit) | テキスト・画像・音楽・動画の生成と呼び出しガード。参照画像は `gs://` をモデル側に解決させる |
 | [**go-character-kit**](https://github.com/shouni/go-character-kit) | キャラクター定義の読み込みと検証だけ |
 | [**go-voicevox**](https://github.com/shouni/go-voicevox) | `[]ScriptLine` → 結合済み WAV。保存先は呼び出し側が決める |
 
@@ -69,7 +67,7 @@ Cloud Run / Cloud Tasks 上で動く成果物。認証・セッション・CSRF�
 | [**ap-story**](https://github.com/shouni/ap-story) | 原稿から章立て・ネーム・パネル・ページを生成 | **台本ゲート**。コマ数が分かる前に画像生成を始めない |
 | [**ap-voice**](https://github.com/shouni/ap-voice) | 記事や文書を話者指定のナレーション音声へ | 台本と音声を別工程に。**生成をやり直さず合成だけかけ直せる** |
 | [**adk-review**](https://github.com/shouni/adk-review) | Git 差分を AI エージェントにレビューさせる | 読み取り専用ツール 3 種で**差分の外を自分で調べる**。打ち切りは時間ではなく回数 |
-| [**ap-music-poc**](https://github.com/shouni/ap-music-poc) | Lyria による音楽生成（PoC） | 非同期化の骨格がそのまま読めることを優先した構成 |
+| [**ap-music-poc**](https://github.com/shouni/ap-music-poc)（アーカイブ） | Lyria による音楽生成（PoC） | 非同期化の骨格がそのまま読めることを優先した構成。読まれるために残しています |
 
 ### 🔌 MCP サーバー
 
