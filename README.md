@@ -23,7 +23,7 @@ AI の話を一切含まない層。生成系以外のアプリケーション�
 | | 担当範囲 |
 |---|---|
 | [**netarmor**](https://github.com/shouni/netarmor) | 外部通信の安全性だけ。AI もクラウドも知らない。`require` は空 |
-| [**go-utils**](https://github.com/shouni/go-utils) | `jobid` / `jst` / `slogctx` / `strlist`。外部依存ゼロ・I/O に触れない・2 つ以上から使われている、が収録条件 |
+| [**go-utils**](https://github.com/shouni/go-utils) | `jobid` / `jst` / `paging` / `slogctx` / `strlist`。外部依存ゼロ・I/O に触れない・2 つ以上から使われている、が収録条件 |
 | [**go-serve-kit**](https://github.com/shouni/go-serve-kit) | 応答を返す側の定型（防御的ヘッダー・表現の出し分け・役割の宣言）。サーバーは持たない |
 | [**gcp-kit**](https://github.com/shouni/gcp-kit) | Cloud Run の Web と Cloud Tasks のワーカー。`worker.Lifecycle` がジョブの一生の順序を持つ |
 | [**go-http-kit**](https://github.com/shouni/go-http-kit) | SSRF 対策と指数バックオフを組み込んだ `net/http` 互換クライアント |
@@ -67,13 +67,13 @@ Cloud Run / Cloud Tasks 上で動く成果物。認証・セッション・CSRF�
 | [**ap-story**](https://github.com/shouni/ap-story) | 原稿から章立て・ネーム・パネル・ページを生成 | **台本ゲート**。コマ数が分かる前に画像生成を始めない |
 | [**ap-voice**](https://github.com/shouni/ap-voice) | 記事や文書を話者指定のナレーション音声へ | 台本と音声を別工程に。**生成をやり直さず合成だけかけ直せる** |
 | [**adk-review**](https://github.com/shouni/adk-review) | Git 差分を AI エージェントにレビューさせる | 読み取り専用ツール 3 種で**差分の外を自分で調べる**。打ち切りは時間ではなく回数 |
-| [**ap-music-poc**](https://github.com/shouni/ap-music-poc)（アーカイブ） | Lyria による音楽生成（PoC） | 非同期化の骨格がそのまま読めることを優先した構成。読まれるために残しています |
+| [**ap-music-poc**](https://github.com/shouni/ap-music-poc)（アーカイブ） | Lyria による音楽生成（PoC） | 品質制御を簡略化し、非同期化の骨格が読めることを優先した構成。参照用に凍結しています |
 
 ### 🔌 MCP サーバー
 
 | | |
 |---|---|
-| **ap-mcp**（非公開） | 5 サービス・72 ツールを 1 エンドポイントへ集約するゲートウェイ。説明文は Go のリテラルではなく `{service}/{tool}.md`、annotations は推測ではなく宣言、**confirm ゲートはプレビューそのもの**（設計は [applications.md](https://github.com/shouni/public-docs/blob/main/docs/applications.md)） |
+| **ap-mcp**（非公開） | 5 サービスのツールを 1 エンドポイントへ集約するゲートウェイ。説明文は Go のリテラルではなく `{service}/{tool}.md`、annotations は推測ではなく宣言、**confirm ゲートはプレビューそのもの**（設計は [applications.md](https://github.com/shouni/public-docs/blob/main/docs/applications.md)） |
 | [**ap-mcp-slack**](https://github.com/shouni/ap-mcp-slack) | サーバーを建てずに stdio で動く Slack の MCP。認証情報に応じてツールの登録自体が変わる |
 
 ### 🐍 Python のツール
