@@ -1,113 +1,112 @@
-## Go / Google Cloud / 生成 AI
+## Go / Google Cloud / Generative AI
 
-**English:** I build generative-AI applications in Go on Cloud Run, and an AI music project,
-**Digital Armor Style**, whose music videos are drawn from the audio by code.
-English docs: [lyric-video-maker](https://github.com/shouni/lyric-video-maker) (audio-driven music videos with karaoke subtitles) ·
-[ap-audio-probe](https://github.com/shouni/ap-audio-probe) (checks whether a generated song follows its recipe).
-Most other docs and articles are in Japanese.
+English | [日本語](README.ja.md)
 
-**公開 Go ライブラリ 17 本**と、それらを統合して **Cloud Run + Cloud Tasks** 上で動く
-生成系アプリケーション群を個人で作っています。
+I build **17 public Go libraries** on my own, and the generative applications that combine them on
+**Cloud Run + Cloud Tasks**. On the side, I run an AI music project, **Digital Armor Style**, whose music videos
+are drawn from the audio by code.
 
-作っているものより、**境界の引き方**を残すことに時間を使っています。どのライブラリが何を
-引き受けないか、なぜその層に置いたか、どの案を採らなかったか——1 つのリポジトリの中だけを
-見ていては書けないことは、すべて [**public-docs**](https://github.com/shouni/public-docs) にまとめてあります。
+I spend more time recording **where the boundaries are drawn** than on what I build: what each library does not
+take on, why it sits on that layer, which options were rejected. Everything that cannot be written from inside a
+single repository is collected in [**public-docs**](https://github.com/shouni/public-docs).
 
-* 🗺️ [**ライブラリリファレンス**](https://github.com/shouni/public-docs/blob/main/docs/libraries.md) — 17 本の境界の地図（担当範囲・隣との線引き・層の位置）
-* 🚀 [**アプリケーションリファレンス**](https://github.com/shouni/public-docs/blob/main/docs/applications.md) — 各アプリがどこまで自分で持ち、どこから委譲しているか
-* 📐 [**規約**](https://github.com/shouni/public-docs#documents) — URL 命名・ワーカー・README の、リポジトリ横断の決まり
-* 📝 [**Zenn @snknsk**](https://zenn.dev/snknsk) — 設計判断の記録
+* 🗺️ [**Library reference**](https://github.com/shouni/public-docs/blob/main/docs/libraries.md) — a map of the 17 libraries' boundaries (scope, lines with neighbours, layer)
+* 🚀 [**Application reference**](https://github.com/shouni/public-docs/blob/main/docs/applications.md) — what each app keeps and what it delegates
+* 📐 [**Conventions**](https://github.com/shouni/public-docs#documents) — cross-repository rules for URL naming, workers and READMEs
+* 📝 [**Zenn @snknsk**](https://zenn.dev/snknsk) — records of design decisions
 
-はじめて読むなら [**個人開発エコシステムの全体像**](https://zenn.dev/snknsk/articles/shouni-go-ecosystem-overview) から。
+New here? Start with [**the overview of the ecosystem**](https://zenn.dev/snknsk/articles/shouni-go-ecosystem-overview).
 
----
-
-### 🏗️ コア基盤ライブラリ
-
-AI の話を一切含まない層。生成系以外のアプリケーションでもそのまま使えます。
-
-| | 担当範囲 |
-|---|---|
-| [**netarmor**](https://github.com/shouni/netarmor) | 外部通信の安全性だけ。AI もクラウドも知らない。`require` は空 |
-| [**go-utils**](https://github.com/shouni/go-utils) | `jobid` / `jst` / `paging` / `slogctx` / `strlist`。外部依存ゼロ・I/O に触れない・2 つ以上から使われている、が収録条件 |
-| [**go-serve-kit**](https://github.com/shouni/go-serve-kit) | 応答を返す側の定型（防御的ヘッダー・表現の出し分け・役割の宣言）。サーバーは持たない |
-| [**gcp-kit**](https://github.com/shouni/gcp-kit) | Cloud Run の Web と Cloud Tasks のワーカー。`worker.Lifecycle` がジョブの一生の順序を持つ |
-| [**go-http-kit**](https://github.com/shouni/go-http-kit) | SSRF 対策と指数バックオフを組み込んだ `net/http` 互換クライアント |
-| [**go-remote-io**](https://github.com/shouni/go-remote-io) | GCS / S3 / ローカルを `Open(ctx, path)` 一本に。成果物の置き場 |
-| [**go-web-reader**](https://github.com/shouni/go-web-reader) | `https://` / `gs://` / `s3://` を同じ入口で読む。素材の取得 |
-| [**audio**](https://github.com/shouni/audio) | 音声バイナリと日本語の読みだけ |
-| [**go-job-kit**](https://github.com/shouni/go-job-kit) | 投入・記録・一覧。成果物のドメインには踏み込まない |
-| [**go-notify**](https://github.com/shouni/go-notify) | 実行結果を人へ届ける部分だけ。CLI を持たない |
-
-### 🤖 AI 抽象化ライブラリ
-
-`genai` SDK を公開 API に出さない層。
-
-| | 担当範囲 |
-|---|---|
-| [**go-prompt-kit**](https://github.com/shouni/go-prompt-kit) | プロンプト管理と、レスポンスの Markdown / JSON → HTML 化 |
-| [**genai-kit**](https://github.com/shouni/genai-kit) | テキスト・画像・音楽・動画の生成と呼び出しガード。参照画像は `gs://` をモデル側に解決させる |
-| [**go-character-kit**](https://github.com/shouni/go-character-kit) | キャラクター定義の読み込みと検証だけ |
-| [**go-voicevox**](https://github.com/shouni/go-voicevox) | `[]ScriptLine` → 結合済み WAV。保存先は呼び出し側が決める |
-
-### 🎨 生成オーケストレーター
-
-工程の組み立てを持つ層。保存先も通知先も呼び出し側の実装。
-
-| | 担当範囲 |
-|---|---|
-| [**go-comic-kit**](https://github.com/shouni/go-comic-kit) | キャラクターの一貫性を保ったまま、漫画を工程単位で組み立てる |
-| [**go-veo-orchestrator**](https://github.com/shouni/go-veo-orchestrator) | 楽曲構成書から動画カット列を構造化し、Veo へ渡す |
-| [**go-review-kit**](https://github.com/shouni/go-review-kit) | Git 差分 → AI レビュー → 公開 → 通知を 1 本のパイプラインに |
+> public-docs and the articles are written in Japanese. The Python tools below have English READMEs.
 
 ---
 
-### 🚀 アプリケーション
+### 🏗️ Core libraries
 
-Cloud Run / Cloud Tasks 上で動く成果物。認証・セッション・CSRF・OIDC はアプリ側に実装を持たず、
-すべて `gcp-kit/auth` に寄せています。
+The layer with no AI at all. Usable as is by applications that generate nothing.
 
-| | 何をするか | 設計の要点 |
+| | Scope |
+|---|---|
+| [**netarmor**](https://github.com/shouni/netarmor) | Safety of outbound traffic only. Knows nothing of AI or cloud. Empty `require` |
+| [**go-utils**](https://github.com/shouni/go-utils) | `jobid` / `jst` / `paging` / `slogctx` / `strlist`. Admission rule: zero dependencies, no I/O, used by two or more repositories |
+| [**go-serve-kit**](https://github.com/shouni/go-serve-kit) | The routine of answering requests (defensive headers, content negotiation, role declaration). No server of its own |
+| [**gcp-kit**](https://github.com/shouni/gcp-kit) | Cloud Run web and Cloud Tasks workers. `worker.Lifecycle` owns the order of a job's life |
+| [**go-http-kit**](https://github.com/shouni/go-http-kit) | A `net/http`-compatible client with SSRF protection and exponential backoff built in |
+| [**go-remote-io**](https://github.com/shouni/go-remote-io) | GCS / S3 / local behind a single `Open(ctx, path)`. Where artifacts are stored |
+| [**go-web-reader**](https://github.com/shouni/go-web-reader) | Reads `https://` / `gs://` / `s3://` through one entry point. Where sources are fetched |
+| [**audio**](https://github.com/shouni/audio) | Audio binaries and Japanese readings only |
+| [**go-job-kit**](https://github.com/shouni/go-job-kit) | Submitting, recording and listing jobs. Stays out of the artifacts' domain |
+| [**go-notify**](https://github.com/shouni/go-notify) | Only delivering results to people. No CLI |
+
+### 🤖 AI abstraction libraries
+
+The layer that keeps the `genai` SDK out of public APIs.
+
+| | Scope |
+|---|---|
+| [**go-prompt-kit**](https://github.com/shouni/go-prompt-kit) | Prompt management, and turning Markdown / JSON responses into HTML |
+| [**genai-kit**](https://github.com/shouni/genai-kit) | Text, image, music and video generation with call guards. Reference images are `gs://`, resolved by the model side |
+| [**go-character-kit**](https://github.com/shouni/go-character-kit) | Loading and validating character definitions only |
+| [**go-voicevox**](https://github.com/shouni/go-voicevox) | `[]ScriptLine` → one joined WAV. The caller decides where it is stored |
+
+### 🎨 Generation orchestrators
+
+The layer that owns how the steps are assembled. Storage and notification are the caller's implementations.
+
+| | Scope |
+|---|---|
+| [**go-comic-kit**](https://github.com/shouni/go-comic-kit) | Builds comics step by step while keeping characters consistent |
+| [**go-veo-orchestrator**](https://github.com/shouni/go-veo-orchestrator) | Structures a song's composition sheet into video cuts and hands them to Veo |
+| [**go-review-kit**](https://github.com/shouni/go-review-kit) | Git diff → AI review → publish → notify as one pipeline |
+
+---
+
+### 🚀 Applications
+
+Running on Cloud Run / Cloud Tasks. Authentication, sessions, CSRF and OIDC are not implemented in the apps;
+all of it lives in `gcp-kit/auth`.
+
+| | What it does | Key design point |
 |---|---|---|
-| [**ap-mv**](https://github.com/shouni/ap-mv) | 楽曲構成書から Veo でミュージックビデオを生成 | **カット 1 本ずつ生成し、ワーカーが自分で投げ直す**。Cloud Tasks の時間上限を越え、途中から再開できる |
-| [**ap-story**](https://github.com/shouni/ap-story) | 原稿から章立て・ネーム・パネル・ページを生成 | **台本ゲート**。コマ数が分かる前に画像生成を始めない |
-| [**ap-voice**](https://github.com/shouni/ap-voice) | 記事や文書を話者指定のナレーション音声へ | 台本と音声を別工程に。**生成をやり直さず合成だけかけ直せる** |
-| [**adk-review**](https://github.com/shouni/adk-review) | Git 差分を AI エージェントにレビューさせる | 読み取り専用ツール 3 種で**差分の外を自分で調べる**。打ち切りは時間ではなく回数 |
-| [**ap-music-poc**](https://github.com/shouni/ap-music-poc)（アーカイブ） | Lyria による音楽生成（PoC） | 品質制御を簡略化し、非同期化の骨格が読めることを優先した構成。参照用に凍結しています |
+| [**ap-mv**](https://github.com/shouni/ap-mv) | Generates music videos with Veo from a composition sheet | **Generates one cut at a time and the worker resubmits itself**, getting past Cloud Tasks' time limit and resuming midway |
+| [**ap-story**](https://github.com/shouni/ap-story) | Generates chapters, storyboards, panels and pages from a manuscript | **Script gate**: no image generation before the panel count is known |
+| [**ap-voice**](https://github.com/shouni/ap-voice) | Turns articles and documents into narration with chosen speakers | Script and audio are separate steps, so **synthesis can be redone without regenerating** |
+| [**adk-review**](https://github.com/shouni/adk-review) | Has an AI agent review a Git diff | Three read-only tools let it **look outside the diff on its own**. Stops by count, not time |
+| [**ap-music-poc**](https://github.com/shouni/ap-music-poc) (archived) | Music generation with Lyria (PoC) | Quality control simplified so the async skeleton is readable. Frozen for reference |
 
-### 🔌 MCP サーバー
-
-| | |
-|---|---|
-| **ap-mcp**（非公開） | 5 サービスのツールを 1 エンドポイントへ集約するゲートウェイ。説明文は Go のリテラルではなく `{service}/{tool}.md`、annotations は推測ではなく宣言、**confirm ゲートはプレビューそのもの**（設計は [applications.md](https://github.com/shouni/public-docs/blob/main/docs/applications.md)） |
-| [**ap-mcp-slack**](https://github.com/shouni/ap-mcp-slack) | サーバーを建てずに stdio で動く Slack の MCP。認証情報に応じてツールの登録自体が変わる |
-
-### 🐍 Python のツール
-
-Cloud Run に乗せず、手元で単体で動かすもの。映像と音の解析は既存の資産が Python 側にあります。
+### 🔌 MCP servers
 
 | | |
 |---|---|
-| [**lyric-video-maker**](https://github.com/shouni/lyric-video-maker) | 曲を解析し、キック・スネア・ベース・歌詞を**音から 1 コマずつ描く MV**（beatmv）。英語は語ごとのカラオケに和訳、日本語は英訳を添える。キーフレーム ZIP からカラオケ字幕付き MP4 を作る機能もある（[記事](https://zenn.dev/snknsk/articles/lyric-video-maker)）。README は英語 / 日本語 |
-| [**ap-audio-probe**](https://github.com/shouni/ap-audio-probe) | 生成した楽曲が**レシピの指示どおりに鳴っているか**を測る検証ツール。Demucs で伴奏を除いてから測り、閾値は曲ごとの相対で決める。曲の良し悪しは対象外。README は英語 / 日本語 |
+| **ap-mcp** (private) | A gateway that gathers five services' tools behind one endpoint. Descriptions live in `{service}/{tool}.md` rather than Go literals, annotations are declared rather than guessed, and **the confirm gate is the preview itself** (design in [applications.md](https://github.com/shouni/public-docs/blob/main/docs/applications.md)) |
+| [**ap-mcp-slack**](https://github.com/shouni/ap-mcp-slack) | A Slack MCP that runs over stdio with no server. Which tools get registered changes with the credentials |
 
----
+### 🐍 Python tools
 
-### 📝 設計判断の記録
+Run locally on their own, not on Cloud Run. The existing assets for video and audio analysis are on the Python side.
 
-| 記事 | 扱っていること |
+| | |
 |---|---|
-| [個人開発エコシステムの全体像](https://zenn.dev/snknsk/articles/shouni-go-ecosystem-overview) | 層の関係と、ライブラリを分けた基準 |
-| [エージェントは「差分の外」を読む](https://zenn.dev/snknsk/articles/adk-go-agent-review-practice) | ADK for Go でレビューをエージェントループに作り直した実践 |
-| [MCP サーバーを API ラッパーで終わらせない](https://zenn.dev/snknsk/articles/mcp-server-is-not-api-wrapper) | confirm ゲートと、プレビュー専用ツールを作らない理由 |
-| [コマ数が分かる前に、画像生成を始めない](https://zenn.dev/snknsk/articles/79fa0d1bbb57e1) | 費用のために工程を二段に割る判断 |
-| [Cloud Run で 1 つのイメージを web/worker に分ける](https://zenn.dev/snknsk/articles/cloudrun-web-worker-split) | 役割で依存グラフと権限を切り替える |
-| [モデル名を変えるたびに、アプリをフルビルドしていた](https://zenn.dev/snknsk/articles/cloudrun-config-terraform-import) | Cloud Run の設定を Terraform へ移す |
-| [NetArmor「凡事徹底」の 4 つの柱](https://zenn.dev/snknsk/articles/netarmor-four-pillars) | SSRF 対策を最下層に置いた理由 |
-| [AI の誤読を許さない](https://zenn.dev/snknsk/articles/go-kagome-prompt-defense) | プロンプトを安全な「読み形式」へトランスパイルする |
-
-全 17 本は [zenn.dev/snknsk](https://zenn.dev/snknsk) にあります。
+| [**lyric-video-maker**](https://github.com/shouni/lyric-video-maker) | Analyses a song and **draws the music video from the audio, frame by frame** (kick, snare, bass and lyrics; beatmv). English songs get word-timed karaoke with a Japanese translation, Japanese songs an English one. Can also build karaoke MP4s from a keyframe ZIP ([article](https://zenn.dev/snknsk/articles/lyric-video-maker), in Japanese) |
+| [**ap-audio-probe**](https://github.com/shouni/ap-audio-probe) | Checks whether a generated song **plays as its recipe instructs**. Measures after removing the backing with Demucs, with thresholds relative to each song. Musical quality is out of scope |
 
 ---
 
-<sub>境界の地図と規約は [public-docs](https://github.com/shouni/public-docs)、使い方は各リポジトリの README、API は [pkg.go.dev](https://pkg.go.dev/search?q=github.com%2Fshouni)、内部の設計判断は各リポジトリの CLAUDE.md が持ちます。</sub>
+### 📝 Design decisions (articles in Japanese)
+
+| Article | What it covers |
+|---|---|
+| [The whole personal-development ecosystem](https://zenn.dev/snknsk/articles/shouni-go-ecosystem-overview) | How the layers relate, and the criteria for splitting libraries |
+| [Agents read outside the diff](https://zenn.dev/snknsk/articles/adk-go-agent-review-practice) | Rebuilding code review as an agent loop with ADK for Go |
+| [An MCP server is more than an API wrapper](https://zenn.dev/snknsk/articles/mcp-server-is-not-api-wrapper) | The confirm gate, and why there are no preview-only tools |
+| [No image generation before the panel count is known](https://zenn.dev/snknsk/articles/79fa0d1bbb57e1) | Splitting a process in two for cost |
+| [One Cloud Run image, split into web and worker](https://zenn.dev/snknsk/articles/cloudrun-web-worker-split) | Switching the dependency graph and permissions by role |
+| [A full app build for every model name change](https://zenn.dev/snknsk/articles/cloudrun-config-terraform-import) | Moving Cloud Run settings into Terraform |
+| [The four pillars of NetArmor](https://zenn.dev/snknsk/articles/netarmor-four-pillars) | Why SSRF protection sits on the lowest layer |
+| [No room for the AI to misread](https://zenn.dev/snknsk/articles/go-kagome-prompt-defense) | Transpiling prompts into a safe "reading" form |
+
+All 17 articles are at [zenn.dev/snknsk](https://zenn.dev/snknsk).
+
+---
+
+<sub>The boundary map and conventions live in [public-docs](https://github.com/shouni/public-docs), usage in each repository's README, APIs on [pkg.go.dev](https://pkg.go.dev/search?q=github.com%2Fshouni), and internal design decisions in each repository's CLAUDE.md.</sub>
