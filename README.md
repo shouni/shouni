@@ -1,5 +1,11 @@
 ## Go / Google Cloud / 生成 AI
 
+**English:** I build generative-AI applications in Go on Cloud Run, and an AI music project,
+**Digital Armor Style**, whose music videos are drawn from the audio by code.
+English docs: [lyric-video-maker](https://github.com/shouni/lyric-video-maker) (audio-driven music videos with karaoke subtitles) ·
+[ap-audio-probe](https://github.com/shouni/ap-audio-probe) (checks whether a generated song follows its recipe).
+Most other docs and articles are in Japanese.
+
 **公開 Go ライブラリ 17 本**と、それらを統合して **Cloud Run + Cloud Tasks** 上で動く
 生成系アプリケーション群を個人で作っています。
 
@@ -82,8 +88,8 @@ Cloud Run に乗せず、手元で単体で動かすもの。映像と音の解�
 
 | | |
 |---|---|
-| [**lyric-video-maker**](https://github.com/shouni/lyric-video-maker) | MP3 とキーフレーム ZIP から**カラオケ字幕付き MP4** を生成。歌詞がプレーンテキストでもタイミングを付けられる（[記事](https://zenn.dev/snknsk/articles/lyric-video-maker)） |
-| [**ap-audio-probe**](https://github.com/shouni/ap-audio-probe) | 生成した楽曲が**レシピの指示どおりに鳴っているか**を測る検証ツール。Demucs で伴奏を除いてから測り、閾値は曲ごとの相対で決める。曲の良し悪しは対象外 |
+| [**lyric-video-maker**](https://github.com/shouni/lyric-video-maker) | 曲を解析し、キック・スネア・ベース・歌詞を**音から 1 コマずつ描く MV**（beatmv）。英語は語ごとのカラオケに和訳、日本語は英訳を添える。キーフレーム ZIP からカラオケ字幕付き MP4 を作る機能もある（[記事](https://zenn.dev/snknsk/articles/lyric-video-maker)）。README は英語 / 日本語 |
+| [**ap-audio-probe**](https://github.com/shouni/ap-audio-probe) | 生成した楽曲が**レシピの指示どおりに鳴っているか**を測る検証ツール。Demucs で伴奏を除いてから測り、閾値は曲ごとの相対で決める。曲の良し悪しは対象外。README は英語 / 日本語 |
 
 ---
 
