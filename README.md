@@ -40,7 +40,7 @@ The layer with no AI at all. Usable as is by applications that generate nothing.
 
 ### 🤖 AI abstraction libraries
 
-The layer that keeps the `genai` SDK out of public APIs.
+Building blocks the orchestrators use for generation: prompts, character definitions, and the clients for Vertex AI and VOICEVOX. Only genai-kit imports the `genai` SDK.
 
 | | Scope |
 |---|---|
