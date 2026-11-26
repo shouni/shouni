@@ -17,7 +17,7 @@ single repository is collected in [**public-docs**](https://github.com/shouni/pu
 
 New here? Start with [**the overview of the ecosystem**](https://zenn.dev/snknsk/articles/shouni-go-ecosystem-overview).
 
-> public-docs and the articles are written in Japanese. The Python tools below have English READMEs.
+> public-docs is in English (with a Japanese README). The articles on Zenn are in Japanese. The Python tools below have English READMEs.
 
 ---
 
